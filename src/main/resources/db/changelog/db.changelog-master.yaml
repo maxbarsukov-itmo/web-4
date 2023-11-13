@@ -1,0 +1,70 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-web4.yaml
+  - changeSet:
+      id: 1
+      author: maxbarsukov
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(128)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(512)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: attempts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: x
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: y
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: r
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: result
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_attempts_user
+                    references: users(id)
+              - column:
+                  name: created_at
+                  type: date
+                  constraints:
+                    nullable: false
