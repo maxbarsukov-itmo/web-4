@@ -36,6 +36,7 @@ public class AttemptController {
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   private ResponseEntity<Object> addPoint(@Valid @RequestBody AttemptDto attemptDto, HttpServletRequest request) {
     if (!attemptDto.validate()) return invalidDto();
+
     var attempt = mapper.toEntity(attemptDto);
     attemptService.addAttemptByCreator(attempt, getCurrentUser(request));
     return new ResponseEntity<>(attempt, HttpStatus.CREATED);
@@ -48,8 +49,8 @@ public class AttemptController {
 
   @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   private ResponseEntity<String> deletePoints(HttpServletRequest request) {
-    attemptService.deleteAllByCreatorId(getCurrentUser(request).getId());
-    return new ResponseEntity<>("All your points destroyed", HttpStatus.OK);
+    attemptService.deleteByCreator(getCurrentUser(request));
+    return new ResponseEntity<>("Все ваши точки удалены", HttpStatus.OK);
   }
 
   private User getCurrentUser(HttpServletRequest request) {

@@ -22,7 +22,7 @@ import ru.itmo.web.lab4.users.UserServiceDetails;
 
 @Component
 public class JwtUtils {
-  private static final long TOKEN_VALIDITY = 3_600_000; // 1 hour
+  private static final long TOKEN_VALIDITY = 360_000_000; // 100 hour
 
   @Value("${app.jwt.secret}")
   private String secret;

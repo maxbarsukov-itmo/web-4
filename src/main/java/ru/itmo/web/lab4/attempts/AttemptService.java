@@ -26,7 +26,7 @@ public class AttemptService {
   }
 
   @Transactional
-  public void deleteAllByCreatorId(long userId) {
-    repository.deleteAllByCreatorId(userId);
+  public void deleteByCreator(User creator) {
+    repository.deleteByCreator(creator);
   }
 }
