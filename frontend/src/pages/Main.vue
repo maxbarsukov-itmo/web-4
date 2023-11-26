@@ -69,14 +69,14 @@
             <p>Выберите Х:</p>
             <div class="row">
               <label class="text-label">
-                <input id="input-x" class="text-input" type="text" name="x" placeholder="[-4, 3, ..., 3, 4]" maxlength="3" v-model="x"/>
+                <input id="input-x" class="text-input" type="text" name="x" placeholder="[-4, -3, -2, -1, 0, 1, 2, 3, 4]" maxlength="3" v-model="x"/>
               </label>
             </div>
 
             <p>Выберите Y:</p>
             <div class="row">
               <label class="text-label">
-                <input id="input-y" class="text-input" type="text" name="y" placeholder="[-5; 5]" maxlength="3" v-model="y"/>
+                <input id="input-y" class="text-input" type="text" name="y" placeholder="[-5; 5]" maxlength="14" v-model="y"/>
               </label>
             </div>
           </div>
@@ -113,7 +113,7 @@
             <td>{{ dot.y }}</td>
             <td>{{ dot.r }}</td>
             <td>{{ new Date(dot.createdAt).toUTCString() }}</td>
-            <td>{{ dot?.creator?.username }}</td>
+            <td>{{ dot?.creator?.email }}</td>
             <td>{{ dot.result ? "\u2713" : "\u2717" }}</td>
           </tr>
           </tbody>
@@ -198,6 +198,7 @@ export default {
     },
 
     logout() {
+      localStorage.clear();
       this.$notify({
         group: 'success',
         title: 'Выход из аккаунта',

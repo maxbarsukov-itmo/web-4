@@ -10,9 +10,9 @@ import java.util.stream.DoubleStream;
 
 @Data
 public class AttemptDto {
-  @NotBlank private double x;
-  @NotBlank private double y;
-  @NotBlank @Contains(array={1, 2, 3, 4}) private double r;
+  private double x;
+  private double y;
+  @Contains(array={1, 2, 3, 4}) private double r;
 
   public boolean validate() {
     return DoubleStream.of(1, 2, 3, 4).anyMatch(v -> v == r);

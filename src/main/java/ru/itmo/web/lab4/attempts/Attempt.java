@@ -25,12 +25,12 @@ public class Attempt implements Serializable {
   private long id;
 
   // Radio {'-4','-3','-2','-1','0','1','2','3','4'} для координаты по оси X
-  @NotNull @Contains(array={-4, -3, -2, -1, 0, 1, 2, 3, 4})
+  @NotNull
   @Column(name="x", nullable=false)
   private double x;
 
   // Text [-5 ... 5] для координаты по оси Y
-  @NotNull @Min(value = -5) @Max(value = 5)
+  @NotNull
   @Column(name="y", nullable=false)
   private double y;
 

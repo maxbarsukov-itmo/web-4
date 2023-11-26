@@ -17,19 +17,19 @@ public class UserService {
   }
 
   @Transactional
-  public User findByUsername(String username){
-    return repository.getByUsername(username);
+  public User findByEmail(String email){
+    return repository.getByEmail(email);
   }
 
   @Transactional
-  public User findByUsernameAndPassword(String username, String password){
-    return repository.getByUsernameAndPassword(username, crypto.digestPasswordSha(password));
+  public User findByEmailAndPassword(String email, String password){
+    return repository.getByEmailAndPassword(email, crypto.digestPasswordSha(password));
   }
 
   @Transactional
-  public boolean register(String username, String password){
+  public boolean register(String email, String password){
     try {
-      var user = new User(username, crypto.digestPasswordSha(password));
+      var user = new User(email, crypto.digestPasswordSha(password));
       repository.save(user);
       return true;
     } catch (Exception e) {

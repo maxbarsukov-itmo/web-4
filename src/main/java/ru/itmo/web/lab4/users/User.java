@@ -3,6 +3,8 @@ package ru.itmo.web.lab4.users;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
@@ -18,8 +20,8 @@ import ru.itmo.web.lab4.attempts.Attempt;
 @NoArgsConstructor
 @Table(name="users")
 public class User implements Serializable {
-  public User(String username, String password){
-    this.username = username;
+  public User(String email, String password){
+    this.email = email;
     this.password = password;
   }
 
@@ -28,8 +30,10 @@ public class User implements Serializable {
   @Column(name="id", nullable=false, unique=true) @NotNull
   private long id;
 
-  @Column(name="username", nullable=false) @NotNull
-  private String username;
+  @Email(message = "Email is not valid", regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
+  @NotEmpty(message = "Email cannot be empty")
+  @Column(name="email", nullable=false) @NotNull
+  private String email;
 
   @JsonIgnore
   @Column(name="password", nullable=false) @NotNull

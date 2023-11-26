@@ -3,13 +3,18 @@
     <h1>Вход в систему</h1>
     <hr>
     <form id="form" @sumbit.prevent="logIn">
-      <div id="login">
-        <label for="loginInput">Введите логин:</label>
-        <input type="text"
-               id="loginInput"
+      <div id="email">
+        <p v-if="!isValidEmail" class="error">
+          <b>Email невалидный</b>
+        </p>
+        <p v-else class="error"><b>&nbsp;</b></p>
+
+        <label for="emailInput">Введите e-mail:</label>
+        <input type="email"
+               id="emailInput"
                required
-               placeholder="Логин"
-               v-model.trim="login"/>
+               placeholder="Введите ваш email"
+               v-model.trim="email"/>
       </div>
       <div id="password">
         <label for="passwordInput">Введите пароль:</label>
@@ -20,8 +25,8 @@
                v-model.trim="password"/>
       </div>
       <div id="buttons">
-        <Button color="blue" label="Войти в систему" @click.native="logIn"/>
-        <Button color="white" style="color: black" label="Зарегистрироваться" @click.native="register"/>
+        <Button :disabled='!isValidEmail' color="blue" :style="[{ 'color': isValidEmail ?'black' : '#ddd' }]" id="loginButton" label="Войти в систему" @click.native="logIn"/>
+        <Button :disabled='!isValidEmail' color="white" :style="[{ 'color': isValidEmail ? 'black' : '#ddd' }]" label="Зарегистрироваться" @click.native="register"/>
       </div>
     </form>
   </div>
@@ -38,16 +43,30 @@ export default {
   },
   data(){
     return{
-      login: "",
+      email: "",
       password: ""
     }
   },
+  computed: {
+    isValidEmail() {
+      return /^[^@]+@\w+(\.\w+)+\w$/.test(this.email);
+    }
+  },
+  watch: {
+    email(val) {
+      const emailInput = document.getElementById("emailInput");
+      emailInput.style.color = this.checkValidEmail(val) ? '' : '#ff0018';
+    }
+  },
   methods: {
+    checkValidEmail(email) {
+      return /^[^@]+@\w+(\.\w+)+\w$/.test(email);
+    },
     logIn(e){
       e.preventDefault()
       this.$router.push({name: 'app-page'});
       api.post('http://localhost:8080/api/users/login', {
-        username: this.login,
+        email: this.email,
         password: this.password
       }).then(response => {
         localStorage.setItem("jwt", response.data);
@@ -59,7 +78,7 @@ export default {
     register(e){
       e.preventDefault();
       api.post('http://localhost:8080/api/users/register', {
-        username: this.login,
+        email: this.email,
         password: this.password
       }).then(() => {
         this.$notify({
@@ -85,12 +104,20 @@ export default {
 </script>
 
 <style scoped>
+.error {
+  text-align: center;
+  font-size: 14px;
+  color: #ff0018;
+}
+
 #form button {
   margin: 20px 10px 10px 10px;
 }
-#login, #password {
+
+#email, #password {
   margin: 5px;
 }
+
 
 #form {
   position: relative;

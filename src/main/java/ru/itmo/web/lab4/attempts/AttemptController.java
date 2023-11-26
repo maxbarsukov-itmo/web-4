@@ -11,6 +11,7 @@ import java.util.List;
 
 import ru.itmo.web.lab4.attempts.dto.AttemptDtoMapper;
 import ru.itmo.web.lab4.attempts.dto.InvalidDtoResponse;
+import ru.itmo.web.lab4.notifications.NotificationService;
 import ru.itmo.web.lab4.users.User;
 import ru.itmo.web.lab4.users.UserService;
 import ru.itmo.web.lab4.attempts.dto.AttemptDto;
@@ -21,13 +22,21 @@ import ru.itmo.web.lab4.common.security.jwt.JwtUtils;
 @RequestMapping(path = "/api/attempts")
 public class AttemptController {
   private final UserService userService;
+  private final NotificationService notificationService;
   private final AttemptService attemptService;
   private final JwtUtils jwt;
   private final AttemptDtoMapper mapper;
 
   @Autowired
-  public AttemptController(AttemptService attemptService, UserService userService, JwtUtils jwt, AttemptDtoMapper mapper) {
+  public AttemptController(
+    AttemptService attemptService,
+    NotificationService notificationService,
+    UserService userService,
+    JwtUtils jwt,
+    AttemptDtoMapper mapper
+  ) {
     this.userService = userService;
+    this.notificationService = notificationService;
     this.attemptService = attemptService;
     this.jwt = jwt;
     this.mapper = mapper;
@@ -49,13 +58,18 @@ public class AttemptController {
 
   @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   private ResponseEntity<String> deletePoints(HttpServletRequest request) {
-    attemptService.deleteByCreator(getCurrentUser(request));
-    // TODO: send mail all your attempts were deleted
-    return new ResponseEntity<>("Все ваши точки удалены", HttpStatus.OK);
+    var user = getCurrentUser(request);
+    if (user != null) {
+      attemptService.deleteByCreator(user);
+      notificationService.infoDeleting(user.getEmail());
+      return new ResponseEntity<>("Все ваши точки удалены.", HttpStatus.OK);
+    }
+
+    return new ResponseEntity<>("Пользователь на аутентифицирован!", HttpStatus.UNAUTHORIZED);
   }
 
   private User getCurrentUser(HttpServletRequest request) {
-    return userService.findByUsername(jwt.getUsername(jwt.resolveToken(request)));
+    return userService.findByEmail(jwt.getEmail(jwt.resolveToken(request)));
   }
 
   private ResponseEntity<Object> invalidDto() {

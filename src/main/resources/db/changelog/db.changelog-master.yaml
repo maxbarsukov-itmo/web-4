@@ -15,7 +15,7 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: username
+                  name: email
                   type: varchar(128)
                   constraints:
                     unique: true

@@ -33,8 +33,8 @@ public class JwtUtils {
     this.userDetails = userDetails;
   }
 
-  public String generateToken(String username, List<String> roles) {
-    Claims claims = Jwts.claims().subject(username).add("roles", roles).build();
+  public String generateToken(String email, List<String> roles) {
+    Claims claims = Jwts.claims().subject(email).add("roles", roles).build();
     Date now = new Date();
     return Jwts
       .builder()
@@ -66,11 +66,11 @@ public class JwtUtils {
   }
 
   public Authentication getAuthentication(String token) {
-    var ud = this.userDetails.loadUserByUsername(getUsername(token));
+    var ud = this.userDetails.loadUserByUsername(getEmail(token));
     return new UsernamePasswordAuthenticationToken(ud, "", ud.getAuthorities());
   }
 
-  public String getUsername(String token) {
+  public String getEmail(String token) {
     return getClaim(token, Claims::getSubject);
   }
 
