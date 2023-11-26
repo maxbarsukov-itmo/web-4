@@ -60,11 +60,10 @@ databaseChangeLog:
                   name: user_id
                   type: bigint
                   constraints:
-                    nullable: false
                     foreignKeyName: fk_attempts_user
                     references: users(id)
               - column:
                   name: created_at
-                  type: date
+                  type: timestamp
                   constraints:
                     nullable: false
