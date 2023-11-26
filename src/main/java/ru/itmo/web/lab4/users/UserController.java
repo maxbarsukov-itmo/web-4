@@ -50,6 +50,7 @@ public class UserController {
 
     if (user == null) {
       if (service.register(username, password)) {
+        // TODO: send mail
         return new ResponseEntity<>("User has been created", HttpStatus.CREATED);
       }
       return new ResponseEntity<>("Cannot register user", HttpStatus.UNPROCESSABLE_ENTITY);

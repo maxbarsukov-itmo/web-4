@@ -50,6 +50,7 @@ public class AttemptController {
   @DeleteMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   private ResponseEntity<String> deletePoints(HttpServletRequest request) {
     attemptService.deleteByCreator(getCurrentUser(request));
+    // TODO: send mail all your attempts were deleted
     return new ResponseEntity<>("Все ваши точки удалены", HttpStatus.OK);
   }
 
