@@ -1,0 +1,62 @@
+<template>
+  <footer>
+    <div class="footer">
+      <div class="logos">
+        <a class="git-link" target="_blank" v-bind:href="authorUrl">
+          <img class="logo" alt="Логотип"  v-bind:src="authorLogoPath"/>
+        </a>
+      </div>
+    </div>
+  </footer>
+</template>
+
+<script>
+export default {
+  name: "Footer",
+  props: {
+    authorLogoPath: String,
+    authorUrl: String,
+  }
+}
+</script>
+
+<style scoped>
+.footer {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  bottom: 0;
+  box-shadow: 0 0 20px 5px darkred;
+  background-color: black;
+  height: 80px;
+  width: 100%;
+}
+
+.footer span{
+  color: white;
+  font-family: Arial, cursive;
+}
+
+.logo:hover {
+  transition: 0.4s;
+  border-radius: 40%;
+  border: 2px solid red;
+  transform: scale(0.9);
+  box-shadow: 0 0 20px 2px darkred;
+}
+
+.logos {
+  display: flex;
+  align-items: center;
+}
+
+.logo{
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin: 0 5px 0 5px;
+  border: 1px solid white;
+}
+</style>
