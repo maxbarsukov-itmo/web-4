@@ -1,0 +1,155 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:web="http://itmo.ru/web/lab4"
+           targetNamespace="http://itmo.ru/web/lab4" elementFormDefault="qualified">
+
+  <xs:simpleType name="email">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="^[a-zA-Z0-9_!#$%&amp;'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="id">
+    <xs:restriction base="xs:long">
+      <xs:minInclusive value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="radius">
+    <xs:restriction base="xs:double">
+      <xs:enumeration value="1"/>
+      <xs:enumeration value="2"/>
+      <xs:enumeration value="3"/>
+      <xs:enumeration value="4"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="userDto">
+    <xs:attribute name="email" type="web:email" use="required"/>
+    <xs:attribute name="password" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="creator">
+    <xs:attribute name="id" type="web:id" use="required"/>
+    <xs:attribute name="email" type="web:email" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="attempt">
+    <xs:sequence>
+      <xs:element name="id" type="web:id"/>
+      <xs:element name="x" type="xs:double"/>
+      <xs:element name="y" type="xs:double"/>
+      <xs:element name="r" type="web:radius"/>
+      <xs:element name="result" type="xs:boolean"/>
+      <xs:element name="createdAt" type="xs:dateTime"/>
+      <xs:element name="creator" type="web:creator"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="attemptDto">
+    <xs:attribute name="x" type="xs:double" use="required"/>
+    <xs:attribute name="y" type="xs:double" use="required"/>
+    <xs:attribute name="r" type="web:radius" use="required"/>
+  </xs:complexType>
+
+  <!-- <Attempts>  -->
+  <!-- addPoint: POST /api/attempts -->
+  <xs:element name="addPointRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="token" type="xs:string"/>
+        <xs:element name="attemptDto" type="web:attemptDto"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="addPointResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="code" type="xs:int"/>
+        <xs:element name="status" type="xs:string"/>
+        <xs:element name="attempt" type="web:attempt" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- getPoints: GET /api/attempts -->
+  <xs:element name="getPointsRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="token" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="getPointsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="code" type="xs:int"/>
+        <xs:element name="status" type="xs:string"/>
+        <xs:element name="attempts" minOccurs="0">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="attempt" type="web:attempt" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- deletePoints: DELETE /api/attempts -->
+  <xs:element name="deletePointsRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="token" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="deletePointsResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="code" type="xs:int"/>
+        <xs:element name="status" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- <Users> -->
+  <!-- register: POST /api/users/register -->
+  <xs:element name="registerRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="userDto" type="web:userDto"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="registerResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="code" type="xs:int"/>
+        <xs:element name="status" type="xs:string"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <!-- login: POST /api/users/login -->
+  <xs:element name="loginRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="userDto" type="web:userDto"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="loginResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="code" type="xs:int"/>
+        <xs:element name="status" type="xs:string"/>
+        <xs:element name="token" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -98,6 +98,7 @@
 
 Запуск **back-end**:
 
+    ./gradlew genJaxb
     ./gradlew bootRun
 
 Запуск **front-end**:

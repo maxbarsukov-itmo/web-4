@@ -21,15 +21,57 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+  main {
+    java {
+      srcDir 'src/main/java'
+      srcDir 'build/generated-sources/jaxb'
+    }
+  }
+}
+
+task genJaxb {
+  ext.sourcesDir = "${buildDir}/generated-sources/jaxb"
+  ext.schema = "src/main/resources/web-services/attempts.xsd"
+
+  outputs.dir sourcesDir
+
+  doLast() {
+    project.ant {
+      taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask",
+        classpath: configurations.jaxb.asPath
+
+      mkdir(dir: sourcesDir)
+      xjc(destdir: sourcesDir, schema: schema) {
+        arg(value: "-wsdl")
+        produces(dir: sourcesDir, includes: "**/*.java")
+      }
+    }
+  }
+}
+
+compileJava.dependsOn genJaxb
+
+configurations {
+  jaxb
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-web-services'
   implementation 'org.springframework.boot:spring-boot-starter-mail'
   implementation 'org.springframework.boot:spring-boot-starter-validation'
   developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
+  implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.1'
+  implementation 'javax.xml.bind:jaxb-api:2.3.1'
+  implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.4'
+  jaxb 'org.glassfish.jaxb:jaxb-xjc'
+
+  implementation 'wsdl4j:wsdl4j:1.6.3'
   implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 
   implementation 'org.liquibase:liquibase-core'
