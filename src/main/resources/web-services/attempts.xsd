@@ -24,13 +24,17 @@
   </xs:simpleType>
 
   <xs:complexType name="userDto">
-    <xs:attribute name="email" type="web:email" use="required"/>
-    <xs:attribute name="password" type="xs:string" use="required"/>
+    <xs:sequence>
+      <xs:element name="email" type="web:email"/>
+      <xs:element name="password" type="xs:string"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="creator">
-    <xs:attribute name="id" type="web:id" use="required"/>
-    <xs:attribute name="email" type="web:email" use="required"/>
+    <xs:sequence>
+      <xs:element name="id" type="web:id"/>
+      <xs:element name="email" type="web:email"/>
+    </xs:sequence>
   </xs:complexType>
 
   <xs:complexType name="attempt">
@@ -46,9 +50,11 @@
   </xs:complexType>
 
   <xs:complexType name="attemptDto">
-    <xs:attribute name="x" type="xs:double" use="required"/>
-    <xs:attribute name="y" type="xs:double" use="required"/>
-    <xs:attribute name="r" type="web:radius" use="required"/>
+    <xs:sequence>
+      <xs:element name="x" type="xs:double"/>
+      <xs:element name="y" type="xs:double"/>
+      <xs:element name="r" type="web:radius"/>
+    </xs:sequence>
   </xs:complexType>
 
   <!-- <Attempts>  -->

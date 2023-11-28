@@ -50,7 +50,7 @@ public class UserEndpoint {
       String token = jwt.generateToken(email, new ArrayList<>() {{ add("USER"); }});
 
       response.setCode(HttpStatus.OK.value());
-      response.setStatus("Вы успешно вошли в аккаунт.");
+      response.setStatus("Вы успешно вошли в аккаунт");
       response.setToken(token);
       return response;
     }
@@ -74,17 +74,17 @@ public class UserEndpoint {
         notificationService.greeting(email);
 
         response.setCode(HttpStatus.CREATED.value());
-        response.setStatus("Пользователь был создан.");
+        response.setStatus("Теперь Вы можете войти");
         return response;
       }
 
       response.setCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
-      response.setStatus("Невозможно зарегистрировать пользователя!");
+      response.setStatus("Невозможно зарегистрировать пользователя");
       return response;
     }
 
     response.setCode(HttpStatus.BAD_REQUEST.value());
-    response.setStatus("Существует пользователь с таким email!");
+    response.setStatus("Существует пользователь с таким email");
     return response;
   }
 }

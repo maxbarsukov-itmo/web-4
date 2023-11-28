@@ -2,7 +2,6 @@ package ru.itmo.web.lab4.attempts;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
@@ -17,11 +16,7 @@ import ru.itmo.web.lab4.users.UserService;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static ru.itmo.web.lab4.common.config.WebServiceConfig.NAMESPACE_URI;
 
