@@ -46,7 +46,7 @@ public class Attempt implements Serializable {
   @Column(name="created_at", nullable=false)
   private Date createdAt;
 
-  @ManyToOne(fetch=FetchType.LAZY)
+  @ManyToOne(fetch=FetchType.EAGER)
   @JoinColumn(name="user_id")
   @ToString.Exclude
   private User creator;
