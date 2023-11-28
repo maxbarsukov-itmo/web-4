@@ -31,6 +31,7 @@ public class SecurityConfiguration {
       .csrf(CsrfConfigurer::disable)
       .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .authorizeHttpRequests(authorizeRequests -> authorizeRequests
+        .requestMatchers(antMatcher("/schema.xsd")).permitAll()
         .requestMatchers(antMatcher("/ws")).permitAll()
         .requestMatchers(antMatcher("/ws/*")).permitAll()
         .requestMatchers(mvc.pattern("/api/users")).permitAll()

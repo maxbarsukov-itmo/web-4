@@ -1,0 +1,4 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://itmo.ru/web/lab4" elementFormDefault="qualified">
+    <xs:import namespace="http://jaxws.com.your.ns" schemaLocation="/web-services/attempts.xsd"/>
+</xs:schema>
