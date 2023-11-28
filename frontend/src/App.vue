@@ -18,7 +18,7 @@ import Header from "@/components/Header.vue";
 import Loader from "@/components/Loader.vue";
 import Footer from "@/components/Footer.vue";
 
-import logoUrl from '../public/assets/logo.jpeg'
+import logoUrl from '/public/assets/logo.jpeg'
 
 
 export default {

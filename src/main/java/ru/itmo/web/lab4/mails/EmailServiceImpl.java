@@ -2,6 +2,7 @@ package ru.itmo.web.lab4.mails;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ public class EmailServiceImpl implements EmailService {
       mail.setSubject(details.getSubject());
       mail.setText(details.getMessage());
 
-      mailSender.send(mail);
+      try {
+        mailSender.send(mail);
+      } catch (MailException ignored) {}
   }
 }

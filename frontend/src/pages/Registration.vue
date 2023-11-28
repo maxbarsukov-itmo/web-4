@@ -34,7 +34,7 @@
 
 <script>
 import Button from '@/components/Button.vue';
-import api from '@/services/api'
+import { loginApi, registerApi } from "@/services/restApi";
 
 export default {
   name: "Registration",
@@ -65,31 +65,29 @@ export default {
     logIn(e){
       e.preventDefault()
       this.$router.push({name: 'app-page'});
-      api.post('http://localhost:8080/api/users/login', {
-        email: this.email,
-        password: this.password
-      }).then(response => {
-        localStorage.setItem("jwt", response.data);
-        this.$router.push({name: 'app-page'});
-      }).catch(error => {
-        this.errorHandler(error.response.data);
-      });
+
+      loginApi(
+        { email: this.email, password: this.password },
+        (data) => {
+          localStorage.setItem("jwt", data);
+          this.$router.push({name: 'app-page'});
+        }, (error) => { this.errorHandler(error); }
+      );
     },
     register(e){
       e.preventDefault();
-      api.post('http://localhost:8080/api/users/register', {
-        email: this.email,
-        password: this.password
-      }).then(() => {
-        this.$notify({
-          group: 'success',
-          title: 'Регистрация',
-          text: 'Вы теперь можете войти',
-          type: 'success'
-        });
-      }).catch(error => {
-        this.errorHandler(error.response.data);
-      });
+
+      registerApi(
+        { email: this.email, password: this.password },
+        () => {
+          this.$notify({
+            group: 'success',
+            title: 'Регистрация',
+            text: 'Вы теперь можете войти',
+            type: 'success'
+          });
+        }, (error) => { this.errorHandler(error); }
+      );
     },
     errorHandler(errorText){
       this.$notify({

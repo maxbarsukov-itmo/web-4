@@ -125,7 +125,7 @@
 
 <script>
 import Button from "@/components/Button.vue";
-import api from '@/services/api'
+import { getPoints, addPoint, deletePoints } from "@/services/restApi";
 
 export default {
   name: "Main",
@@ -165,10 +165,10 @@ export default {
   },
   methods: {
     addDots(x, y) {
-      api.post("http://localhost:8080/api/attempts",
-        {x: x, y: y, r: this.r},
-        {headers: {"Authorization": "Bearer " + localStorage.getItem("jwt")}
-        }).then(() => {
+      addPoint(
+      { x: x, y: y, r: this.r },
+      { headers: {"Authorization": "Bearer " + localStorage.getItem("jwt")} },
+      () => {
         this.loadDots();
         this.$notify({
           group: 'success',
@@ -176,25 +176,24 @@ export default {
           text: 'Успешно',
           type: 'success'
         });
-      }).catch(() => {
-        this.errorHandler("Точку не удалось добавить")
-      });
+      }, () => { this.errorHandler("Точку не удалось добавить") });
     },
     deleteDots() {
-      api.delete("http://localhost:8080/api/attempts",
-        {headers: {Authorization: "Bearer " + localStorage.getItem("jwt")}
-        }).then(() => {
-        this.loadDots();
-        this.$notify({
-          group: 'success',
-          title: 'Удаление точек',
-          text: 'Успешно',
-          type: 'success'
-        });
-      }).catch(() => {
-        this.errorHandler("Точки не удалось удалить");
-        this.logout();
-      });
+      deletePoints(
+        { headers: { Authorization: "Bearer " + localStorage.getItem("jwt") } },
+        () => {
+          this.loadDots();
+          this.$notify({
+            group: 'success',
+            title: 'Удаление точек',
+            text: 'Успешно',
+            type: 'success'
+          });
+        },
+        () => {
+          this.errorHandler("Точки не удалось удалить");
+          this.logout();
+        })
     },
 
     logout() {
@@ -209,17 +208,18 @@ export default {
     },
 
     loadDots() {
-      api.get("http://localhost:8080/api/attempts", {
-        headers: {Authorization: "Bearer " + localStorage.getItem("jwt")}
-      }).then(response => {
-        this.dots = response.data.sort(function(a, b) {
-          return new Date(b.createdAt) - new Date(a.createdAt);
-        });
-        this.drawDots();
-      }).catch(() => {
-        this.errorHandler("Точки не удалось загрузить");
-        this.logout();
-      });
+      getPoints(
+        { headers: { Authorization: "Bearer " + localStorage.getItem("jwt") } },
+        (data) => {
+          this.dots = data.sort(function(a, b) {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+          this.drawDots();
+        }, () => {
+          this.errorHandler("Точки не удалось загрузить");
+          this.logout();
+        }
+      )
     },
 
     drawDots() {

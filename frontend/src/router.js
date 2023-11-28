@@ -21,9 +21,7 @@ const router = createRouter({
       name: 'auth-page',
       component: Registration,
       beforeEnter: (to, from, next) => {
-        (localStorage.getItem("jwt") !== null)
-          ? next({name: 'app-page'})
-          : next({name: 'auth-page'});
+        (localStorage.getItem("jwt") !== null) ? next({name: 'app-page'}) : next();
       }
     },
     {
@@ -31,10 +29,7 @@ const router = createRouter({
       name: 'app-page',
       component: Main,
       beforeEnter: (to, from, next) => {
-        if (localStorage.getItem("jwt")) next();
-        else next({
-          name: 'error-page-app',
-        });
+        (localStorage.getItem("jwt") !== null) ? next() : next({ name: 'error-page-app'});
       }
     },
     {
