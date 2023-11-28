@@ -1,6 +1,8 @@
 import axios from "axios";
+import apiUrl from "@/config/constants";
 
-const api = axios.create({ baseURL: 'http://localhost:8080/api' });
+const api = axios.create({ baseURL: `${apiUrl}/api` });
+export default api;
 
 export function addPoint(data, config, then, err) {
   api.post('/attempts', data, config)
