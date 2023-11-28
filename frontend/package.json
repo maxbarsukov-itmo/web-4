@@ -10,6 +10,7 @@
   "dependencies": {
     "@kyvg/vue3-notification": "^3.0.2",
     "axios": "^1.6.1",
+    "fast-xml-parser": "^4.3.2",
     "vue": "^3.3.4",
     "vue-router": "^4.2.5"
   },

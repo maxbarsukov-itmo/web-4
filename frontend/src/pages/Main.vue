@@ -125,7 +125,7 @@
 
 <script>
 import Button from "@/components/Button.vue";
-import { getPoints, addPoint, deletePoints } from "@/services/restApi";
+import { getPoints, addPoint, deletePoints } from "@/services/soapApi";
 
 export default {
   name: "Main",
@@ -167,33 +167,37 @@ export default {
     addDots(x, y) {
       addPoint(
       { x: x, y: y, r: this.r },
-      { headers: {"Authorization": "Bearer " + localStorage.getItem("jwt")} },
-      () => {
+        localStorage.getItem("jwt"),
+      (data) => {
         this.loadDots();
         this.$notify({
           group: 'success',
           title: 'Добавление точки',
-          text: 'Успешно',
+          text: data.status,
           type: 'success'
         });
-      }, () => { this.errorHandler("Точку не удалось добавить") });
+      }, (err) => {
+        this.errorHandler(err.status);
+        console.error(err);
+        });
     },
     deleteDots() {
       deletePoints(
-        { headers: { Authorization: "Bearer " + localStorage.getItem("jwt") } },
-        () => {
+        localStorage.getItem("jwt"),
+        (data) => {
           this.loadDots();
           this.$notify({
             group: 'success',
             title: 'Удаление точек',
-            text: 'Успешно',
+            text: data.status,
             type: 'success'
           });
         },
-        () => {
-          this.errorHandler("Точки не удалось удалить");
+        (err) => {
+          this.errorHandler(err.status);
+          console.error(err);
           this.logout();
-        })
+        });
     },
 
     logout() {
@@ -209,14 +213,21 @@ export default {
 
     loadDots() {
       getPoints(
-        { headers: { Authorization: "Bearer " + localStorage.getItem("jwt") } },
+        localStorage.getItem("jwt"),
         (data) => {
-          this.dots = data.sort(function(a, b) {
+          if (data.attempts === "") {
+            data.attempts = { attempt: [] };
+          }
+          if (!Array.isArray(data.attempts.attempt)) {
+            data.attempts.attempt = [data.attempts.attempt];
+          }
+          this.dots = data.attempts.attempt.sort(function(a, b) {
             return new Date(b.createdAt) - new Date(a.createdAt);
           });
           this.drawDots();
-        }, () => {
-          this.errorHandler("Точки не удалось загрузить");
+        }, (err) => {
+          this.errorHandler(err.status);
+          console.error(err);
           this.logout();
         }
       )

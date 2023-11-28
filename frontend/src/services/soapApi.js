@@ -1,9 +1,26 @@
 import apiUrl from "@/config/constants";
 import api from "@/services/restApi";
+import { XMLParser, XMLValidator } from "fast-xml-parser";
 
 const url = `${apiUrl}/ws`;
 
-function soapApi(query, then, err) {
+function parseXml(xmlData) {
+  const options = {
+    attributeNamePrefix : "ns2",
+    ignoreAttributes : false,
+    ignoreNameSpace: true,
+    removeNSPrefix: true,
+  };
+  const parser = new XMLParser(options);
+  return parser.parse(xmlData);
+}
+
+function parseSoapResponse(xmlData) {
+  const json = parseXml(xmlData)
+  return json.Envelope.Body;
+}
+
+export default function soapApi(query, responseName, then, err) {
   const request =  `
     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                     xmlns:gs="http://itmo.ru/web/lab4">
@@ -13,18 +30,37 @@ function soapApi(query, then, err) {
   `;
 
   api.post(url, request, { headers: { 'Content-Type': 'text/xml' } })
-    .then(res => then(res.data))
-    .catch(error => err(error.response.data));
+    .then(res => {
+      const json = parseSoapResponse(res.data)[responseName];
+      if (json.code === 200 || json.code === 201) {
+        then(json);
+        return;
+      }
+      err(json);
+    })
+    .catch(error => {
+      console.error(error);
+
+      if (error.response?.data) {
+        const json = parseSoapResponse(error.response?.data);
+        if (json[[responseName]]) return err(json[responseName]);
+        return err(json)
+      }
+    });
 }
 
 export function addPoint(data, token, then, err) {
   const query =  `
         <gs:addPointRequest>
             <gs:token>${token}</gs:token>
-            <gs:attemptDto x="${data.x}" y="${data.y}" r="${data.r}"/>
+            <gs:attemptDto>
+                <gs:x>${data.x}</gs:x>
+                <gs:y>${data.y}</gs:y>
+                <gs:r>${data.r}</gs:r>
+            </gs:attemptDto>
         </gs:addPointRequest>
   `;
-  soapApi(query, then, err);
+  return soapApi(query, 'addPointResponse', then, err);
 }
 
 export function getPoints(token, then, err) {
@@ -33,7 +69,7 @@ export function getPoints(token, then, err) {
         <gs:token>${token}</gs:token>
     </gs:getPointsRequest>
   `;
-  soapApi(query, then, err);
+  return soapApi(query, 'getPointsResponse', then, err);
 }
 
 export function deletePoints(token, then, err) {
@@ -42,23 +78,29 @@ export function deletePoints(token, then, err) {
         <gs:token>${token}</gs:token>
     </gs:deletePointsRequest>
   `;
-  soapApi(query, then, err);
+  return soapApi(query, 'deletePointsResponse', then, err);
 }
 
-function registerApi({ email, password }, then, err) {
+export function registerApi({ email, password }, then, err) {
   const query =  `
     <gs:registerRequest>
-        <gs:userDto email="${email}" password="${password}"/>
+        <gs:userDto>
+            <gs:email>${email}</gs:email>
+            <gs:password>${password}</gs:password>
+        </gs:userDto>
     </gs:registerRequest>
   `;
-  soapApi(query, then, err);
+  return soapApi(query, 'registerResponse', then, err);
 }
 
-function loginApi({ email, password }, then, err) {
+export function loginApi({ email, password }, then, err) {
   const query =  `
     <gs:loginRequest>
-        <gs:userDto email="${email}" password="${password}"/>
+        <gs:userDto>
+            <gs:email>${email}</gs:email>
+            <gs:password>${password}</gs:password>
+        </gs:userDto>
     </gs:loginRequest>
   `;
-  soapApi(query, then, err);
+  return soapApi(query, 'loginResponse', then, err);
 }

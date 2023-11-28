@@ -34,7 +34,7 @@
 
 <script>
 import Button from '@/components/Button.vue';
-import { loginApi, registerApi } from "@/services/restApi";
+import { loginApi, registerApi } from "@/services/soapApi";
 
 export default {
   name: "Registration",
@@ -69,9 +69,18 @@ export default {
       loginApi(
         { email: this.email, password: this.password },
         (data) => {
-          localStorage.setItem("jwt", data);
+          localStorage.setItem("jwt", data.token);
+          this.$notify({
+            group: 'success',
+            title: 'Вход в аккаунт',
+            text: data.status,
+            type: 'success'
+          });
           this.$router.push({name: 'app-page'});
-        }, (error) => { this.errorHandler(error); }
+        }, (error) => {
+          this.errorHandler(error.status);
+          console.error(error);
+        }
       );
     },
     register(e){
@@ -79,14 +88,17 @@ export default {
 
       registerApi(
         { email: this.email, password: this.password },
-        () => {
+        (data) => {
           this.$notify({
             group: 'success',
             title: 'Регистрация',
-            text: 'Вы теперь можете войти',
+            text: data.status,
             type: 'success'
           });
-        }, (error) => { this.errorHandler(error); }
+        }, (error) => {
+          this.errorHandler(error.status);
+          console.error(error);
+        }
       );
     },
     errorHandler(errorText){
